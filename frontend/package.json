@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:all": "concurrently -n frontend,backend \"vite\" \"cd ../backend && python -m uvicorn main:app --reload --port 8000\"",
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "lint": "eslint .",
