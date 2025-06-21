@@ -81,7 +81,7 @@ function RecentlyPlayedCard({
             className={`text-xl font-bold leading-tight ${animateTrackChange ? 'animate-fadein-fast' : ''}`}
             title={track.name}
           >
-            {cleanTrackName(track.name)}
+            {track.name ? cleanTrackName(track.name) : 'Unknown Track'}
           </p>
           <p
             className={`text-sm text-gray-200 ${animateTrackChange ? 'animate-fadein-slow' : ''}`}
