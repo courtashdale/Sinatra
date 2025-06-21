@@ -48,4 +48,4 @@ def get_system_status():
 
 @router.get("/", response_class=PlainTextResponse, include_in_schema=False)
 def health_check():
-    return "Sinatra backend is alive."
+    return "OK"
