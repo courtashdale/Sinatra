@@ -1,12 +1,9 @@
 # api/ai.py
 from fastapi import APIRouter, HTTPException, Query
 from openai import OpenAI
-from dotenv import load_dotenv, find_dotenv
 from db.mongo import users_collection
 import os
 import json
-
-_ = load_dotenv(find_dotenv())
 
 api_key = os.getenv("OPENAI_API_KEY")
 if api_key:

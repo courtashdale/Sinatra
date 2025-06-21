@@ -5,6 +5,7 @@ import compression from 'vite-plugin-compression';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
+  envDir: '..',
   plugins: [
     react(),
     compression({
