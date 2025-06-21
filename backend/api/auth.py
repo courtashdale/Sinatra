@@ -108,6 +108,7 @@ def refresh_token(refresh_token: str = Query(...)):
 def refresh_session(user_id: str = Query(...)):
     return refresh_user_token(user_id)
 
+
 @router.get("/logout")
 def logout_user():
     response = JSONResponse({"message": "Logged out"})
@@ -115,6 +116,6 @@ def logout_user():
         key="sinatra_user_id",
         path="/",
         samesite="None",  # Match what you used in login
-        secure=True        # Match what you used in login
+        secure=True,  # Match what you used in login
     )
     return response

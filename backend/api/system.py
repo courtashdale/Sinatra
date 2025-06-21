@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse, PlainTextResponse
 
 router = APIRouter(tags=["system"])
 
+
 @router.get("/status")
 def get_system_status():
     # Mongo
@@ -41,8 +42,9 @@ def get_system_status():
         "mongo": mongo_status,
         "spotify": spotify_status,
         "vercel_frontend": vercel_status,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utcnow().isoformat(),
     }
+
 
 @router.get("/", response_class=PlainTextResponse, include_in_schema=False)
 def health_check():

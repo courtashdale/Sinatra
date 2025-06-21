@@ -7,6 +7,7 @@ from services.spotify import build_track_data
 
 router = APIRouter(tags=["playback"])
 
+
 @router.get("/playback")
 def get_playback_state(request: Request, access_token: str = Depends(get_token)):
     user_id = request.cookies.get("sinatra_user_id")
@@ -21,14 +22,18 @@ def get_playback_state(request: Request, access_token: str = Depends(get_token))
         if playback and playback.get("item"):
             track_data = build_track_data(playback["item"], sp)
 
-            existing = users_collection.find_one({"user_id": user_id}, {"last_played_track": 1})
-            if existing and existing.get("last_played_track", {}).get("id") == track_data["id"]:
+            existing = users_collection.find_one(
+                {"user_id": user_id}, {"last_played_track": 1}
+            )
+            if (
+                existing
+                and existing.get("last_played_track", {}).get("id") == track_data["id"]
+            ):
                 print("🟡 Track already stored, skipping update.")
                 return {"status": "unchanged", "track": track_data}
 
             users_collection.update_one(
-                {"user_id": user_id},
-                {"$set": {"last_played_track": track_data}}
+                {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
             )
             return {"playback": track_data}
         else:
@@ -40,7 +45,9 @@ def get_playback_state(request: Request, access_token: str = Depends(get_token))
 
 
 @router.get("/recently-played")
-def get_recently_played(request: Request, access_token: str = Depends(get_token), limit: int = 1):
+def get_recently_played(
+    request: Request, access_token: str = Depends(get_token), limit: int = 1
+):
     sp = spotipy.Spotify(auth=access_token)
 
     try:
@@ -53,20 +60,26 @@ def get_recently_played(request: Request, access_token: str = Depends(get_token)
 
         user_id = request.cookies.get("sinatra_user_id")
         if user_id:
-            existing = users_collection.find_one({"user_id": user_id}, {"last_played_track": 1})
-            if existing and existing.get("last_played_track", {}).get("id") == track_data["id"]:
+            existing = users_collection.find_one(
+                {"user_id": user_id}, {"last_played_track": 1}
+            )
+            if (
+                existing
+                and existing.get("last_played_track", {}).get("id") == track_data["id"]
+            ):
                 print("🟡 Track already stored, skipping update.")
                 return {"status": "unchanged", "track": track_data}
             users_collection.update_one(
-                {"user_id": user_id},
-                {"$set": {"last_played_track": track_data}}
+                {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
             )
 
         return {"track": track_data}
 
     except Exception as e:
         print(f"⚠️ Recently played error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch recently played track")
+        raise HTTPException(
+            status_code=500, detail="Failed to fetch recently played track"
+        )
 
 
 @router.get("/now-playing")
@@ -80,7 +93,7 @@ def now_playing(request: Request, access_token: str = Depends(get_token)):
 
         track = current["item"]
         track_data = build_track_data(track, sp)
-        
+
         return {"track": track_data}
 
     except Exception as e:
@@ -103,21 +116,27 @@ def update_playing(request: Request, access_token: str = Depends(get_token)):
 
         track_data = build_track_data(current["item"], sp)
 
-        existing = users_collection.find_one({"user_id": user_id}, {"last_played_track": 1})
-        if existing and existing.get("last_played_track", {}).get("id") == track_data["id"]:
+        existing = users_collection.find_one(
+            {"user_id": user_id}, {"last_played_track": 1}
+        )
+        if (
+            existing
+            and existing.get("last_played_track", {}).get("id") == track_data["id"]
+        ):
             print("🟡 Track already stored, skipping update.")
             return {"status": "unchanged", "track": track_data}
 
         users_collection.update_one(
-            {"user_id": user_id},
-            {"$set": {"last_played_track": track_data}}
+            {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
         )
 
         return {"status": "updated", "track": track_data}
 
     except Exception as e:
         print(f"⚠️ Update playing error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to update last played track")
+        raise HTTPException(
+            status_code=500, detail="Failed to update last played track"
+        )
 
 
 @router.get("/check-recent")

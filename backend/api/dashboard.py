@@ -6,6 +6,7 @@ from services.music.track_utils import apply_meta_gradients
 
 router = APIRouter(tags=["dashboard"])
 
+
 @router.get("/dashboard")
 def get_dashboard(request: Request):
     user_id = request.cookies.get("sinatra_user_id")
@@ -24,8 +25,12 @@ def get_dashboard(request: Request):
     featured_ids = playlists_data.get("featured", [])
 
     # Create a lookup for faster matching
-    playlist_lookup = {pl.get("id") or pl.get("playlist_id"): pl for pl in all_playlists}
-    featured_playlists = [playlist_lookup.get(pid) for pid in featured_ids if pid in playlist_lookup]
+    playlist_lookup = {
+        pl.get("id") or pl.get("playlist_id"): pl for pl in all_playlists
+    }
+    featured_playlists = [
+        playlist_lookup.get(pid) for pid in featured_ids if pid in playlist_lookup
+    ]
 
     print(f"✅ /dashboard success for user_id = {user_id}")
     genres_data = get_genres(request)

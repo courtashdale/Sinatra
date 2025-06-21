@@ -17,25 +17,29 @@ else:
 
 router = APIRouter(tags=["ai"])
 
+
 def chatgpt(prompt: str, model: str = "gpt-4.1-nano") -> str:
     if not client:
-        raise HTTPException(status_code=503, detail="AI service unavailable: OPENAI_API_KEY not set")
+        raise HTTPException(
+            status_code=503, detail="AI service unavailable: OPENAI_API_KEY not set"
+        )
 
     try:
         messages = [{"role": "user", "content": prompt}]
         response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=0.5
+            model=model, messages=messages, temperature=0.5
         )
         return response.choices[0].message.content
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"OpenAI error: {str(e)}")
 
+
 @router.get("/ai-genres")
 def generate_ai_genre_commentary(user_id: str = Query(...)):
     if not client:
-        raise HTTPException(status_code=503, detail="AI service unavailable: OPENAI_API_KEY not set")
+        raise HTTPException(
+            status_code=503, detail="AI service unavailable: OPENAI_API_KEY not set"
+        )
 
     doc = users_collection.find_one({"user_id": user_id})
     if not doc or "genre_analysis" not in doc:
@@ -66,10 +70,12 @@ Format your results as a JSON object with "sen-#" and /
 """
 
     result = chatgpt(prompt)
-    
+
     try:
         parsed = json.loads(result)
     except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="OpenAI response was not valid JSON")
+        raise HTTPException(
+            status_code=500, detail="OpenAI response was not valid JSON"
+        )
 
     return {"result": parsed}

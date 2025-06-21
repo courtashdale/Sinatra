@@ -19,7 +19,10 @@ router = APIRouter(tags=["genres"])
 import json
 from pathlib import Path
 
-GENRE_MAP_PATH = Path(__file__).resolve().parent.parent / "services" / "music" / "genre-map.json"
+GENRE_MAP_PATH = (
+    Path(__file__).resolve().parent.parent / "services" / "music" / "genre-map.json"
+)
+
 
 @router.get("/genres")
 def get_genres(request: Request, refresh: bool = False):
@@ -52,19 +55,24 @@ def refresh_genre_analysis(payload: dict):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Refresh failed: {str(e)}")
 
+
 @router.get("/meta-gradients")
 def get_meta_gradients():
     return gradients
 
+
 def analyze_user_genres(user_id: str, access_token: str):
     import spotipy
+
     sp = spotipy.Spotify(auth=access_token)
 
     # Fetch top 200 artists
     top_artists = []
     for offset in (0, 50, 100, 150):
         try:
-            batch = sp.current_user_top_artists(limit=50, offset=offset, time_range="short_term")
+            batch = sp.current_user_top_artists(
+                limit=50, offset=offset, time_range="short_term"
+            )
             top_artists.extend(batch.get("items", []))
         except Exception as e:
             print(f"⚠️ Failed to fetch top artists at offset {offset}: {e}")
@@ -113,8 +121,12 @@ def analyze_user_genres(user_id: str, access_token: str):
     top_meta = genre_map.get(top_sub.lower(), "other") if top_sub else None
 
     result = {
-        "sub_genres": dict(sorted(sub_genres.items(), key=lambda x: -x[1]["portion"])[:10]),
-        "meta_genres": dict(sorted(meta_genres.items(), key=lambda x: -x[1]["portion"])[:10]),
+        "sub_genres": dict(
+            sorted(sub_genres.items(), key=lambda x: -x[1]["portion"])[:10]
+        ),
+        "meta_genres": dict(
+            sorted(meta_genres.items(), key=lambda x: -x[1]["portion"])[:10]
+        ),
         "top_subgenre": {
             "sub_genre": top_sub,
             "parent_genre": top_meta,

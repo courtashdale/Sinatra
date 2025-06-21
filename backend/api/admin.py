@@ -8,6 +8,7 @@ from services.spotify import get_spotify_client
 
 router = APIRouter(tags=["admin"])
 
+
 @router.post("/admin/backfill-playlist-metadata")
 def backfill_playlist_metadata():
     users = users_collection.find({"playlists.all": {"$exists": True}})

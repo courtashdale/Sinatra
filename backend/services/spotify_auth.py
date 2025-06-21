@@ -2,6 +2,7 @@
 import os
 from spotipy.oauth2 import SpotifyOAuth
 
+
 def get_spotify_oauth(redirect_uri: str = None):
     return SpotifyOAuth(
         client_id=os.getenv("SPOTIFY_CLIENT_ID"),

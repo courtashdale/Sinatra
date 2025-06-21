@@ -1,7 +1,12 @@
 # api/playlists.py
 from fastapi import APIRouter, Query, HTTPException, Body
 from models.shared import CookiePayload, UserIdPayload, OnboardingPayload
-from models.playlists import PlaylistSummary, PlaylistID, SaveAllPlaylistsRequest, FeaturedPlaylistsUpdateRequest
+from models.playlists import (
+    PlaylistSummary,
+    PlaylistID,
+    SaveAllPlaylistsRequest,
+    FeaturedPlaylistsUpdateRequest,
+)
 from typing import List
 import spotipy
 from fastapi import Request, Depends
@@ -12,6 +17,7 @@ from db.mongo import users_collection, playlists_collection
 from services.token import get_token
 
 router = APIRouter(tags=["playlists"])
+
 
 @router.get("/playlists")
 def get_playlists(
@@ -70,13 +76,17 @@ async def add_playlists(
     for pl in playlists:
         try:
             playlist = sp.playlist(pl["id"])
-            enriched.append({
-                "id": pl["id"],
-                "name": playlist["name"],
-                "image": playlist["images"][0]["url"] if playlist["images"] else None,
-                "tracks": playlist["tracks"]["total"],
-                "external_url": playlist["external_urls"]["spotify"],
-            })
+            enriched.append(
+                {
+                    "id": pl["id"],
+                    "name": playlist["name"],
+                    "image": (
+                        playlist["images"][0]["url"] if playlist["images"] else None
+                    ),
+                    "tracks": playlist["tracks"]["total"],
+                    "external_url": playlist["external_urls"]["spotify"],
+                }
+            )
         except Exception as e:
             print(f"⚠️ Failed to fetch metadata for playlist {pl['id']}: {e}")
 
@@ -147,6 +157,7 @@ def update_featured_playlists(data: FeaturedPlaylistsUpdateRequest = Body(...)):
 
     return {"status": "ok", "count": len(normalized_ids)}
 
+
 @router.get("/playlist-info")
 def get_playlist_info(user_id: str = Query(...), playlist_id: str = Query(...)):
     access_token = get_token(user_id)
@@ -173,12 +184,15 @@ def get_user_playlists(user_id: str = Query(...)):
         "playlists": doc.get("playlists", []),
     }
 
+
 @router.get("/synced-playlists/paginated")
-def get_paginated_playlists(user_id: str = Query(...), offset: int = 0, limit: int = 50):
+def get_paginated_playlists(
+    user_id: str = Query(...), offset: int = 0, limit: int = 50
+):
     doc = playlists_collection.find_one({"user_id": user_id})
     if not doc:
         raise HTTPException(status_code=404, detail="No synced playlists found.")
-    
+
     all_playlists = doc.get("playlists", [])
     total = len(all_playlists)
     sliced = all_playlists[offset : offset + limit]

@@ -3,6 +3,7 @@ from fastapi import HTTPException, Request, Depends
 from services.spotify_auth import get_spotify_oauth
 from db.mongo import users_collection
 
+
 def get_token(request: Request) -> str:
     user_id = request.cookies.get("sinatra_user_id")
     if not user_id:
@@ -39,9 +40,11 @@ def get_token(request: Request) -> str:
 
     return token_info["access_token"]
 
+
 def refresh_user_token(user_id: str) -> dict:
     _ = get_token(user_id)
     return {"status": "ok"}
+
 
 def get_token_by_user_id(user_id: str) -> str:
     user = users_collection.find_one({"user_id": user_id})

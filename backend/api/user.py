@@ -25,6 +25,7 @@ import spotipy
 
 router = APIRouter()
 
+
 @router.get("/me")
 def get_me(request: Request):
     user_id = request.cookies.get("sinatra_user_id")
@@ -58,7 +59,9 @@ def get_me(request: Request):
 
         except Exception as e:
             print(f"⚠️ Failed to auto-register user {user_id}: {e}")
-            raise HTTPException(status_code=404, detail="User not found and cannot be registered")
+            raise HTTPException(
+                status_code=404, detail="User not found and cannot be registered"
+            )
 
     return {
         "user_id": user["user_id"],
@@ -159,6 +162,7 @@ def register_user(data: dict = Body(...)):
         print("⚠️ Genre analysis failed during registration:", e)
 
     return {"status": "success", "message": "User registered and initialized"}
+
 
 @router.delete("/delete-user")
 def delete_user(

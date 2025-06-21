@@ -2,6 +2,7 @@
 from pymongo.errors import ConnectionFailure
 from db.mongo import client
 
+
 def check_mongo_connection():
     try:
         client.admin.command("ping")

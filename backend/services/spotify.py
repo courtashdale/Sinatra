@@ -22,7 +22,9 @@ def enrich_playlist(sp: spotipy.Spotify, playlist_id: str) -> dict:
     }
 
 
-def simplify_track_with_genres(sp: spotipy.Spotify, track: dict, genre_cache: dict) -> dict:
+def simplify_track_with_genres(
+    sp: spotipy.Spotify, track: dict, genre_cache: dict
+) -> dict:
     return {
         "name": track["name"],
         "artists": [a["name"] for a in track["artists"]],
@@ -32,9 +34,11 @@ def simplify_track_with_genres(sp: spotipy.Spotify, track: dict, genre_cache: di
         "genres": get_artist_genres(sp, track["artists"], genre_cache),
     }
 
+
 def get_spotify_client(user_id: str) -> spotipy.Spotify:
     access_token = get_token_by_user_id(user_id)
     return spotipy.Spotify(auth=access_token)
+
 
 def build_track_data(track, sp):
     artist = track["artists"][0]
@@ -47,7 +51,9 @@ def build_track_data(track, sp):
         "artist": artist["name"],
         "album": track["album"]["name"],
         "external_url": track["external_urls"]["spotify"],
-        "album_art_url": track["album"]["images"][0]["url"] if track["album"].get("images") else None,
+        "album_art_url": (
+            track["album"]["images"][0]["url"] if track["album"].get("images") else None
+        ),
         "genres": genres,
-        "timestamp": datetime.now(timezone.utc).isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
