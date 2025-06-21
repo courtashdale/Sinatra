@@ -50,7 +50,7 @@ async def callback(request: Request):
         raise HTTPException(status_code=400, detail=f"State decode error: {e}")
 
     try:
-        sp_oauth = get_spotify_oauth(redirect_uri)
+        sp_oauth = get_spotify_oauth(CALLBACK_URL)
         token_info = sp_oauth.get_access_token(code, as_dict=True)
         sp = spotipy.Spotify(auth=token_info["access_token"])
         profile = sp.current_user()
