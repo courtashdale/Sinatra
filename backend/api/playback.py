@@ -7,7 +7,6 @@ from services.spotify import build_track_data
 
 router = APIRouter(tags=["playback"])
 
-
 @router.get("/playback")
 def get_playback_state(request: Request, access_token: str = Depends(get_token)):
     user_id = request.cookies.get("sinatra_user_id")
@@ -114,7 +113,9 @@ def update_playing(request: Request, access_token: str = Depends(get_token)):
         if not current or not current.get("item"):
             raise HTTPException(status_code=404, detail="Nothing is currently playing")
 
+        print("🎵 Current playback found")
         track_data = build_track_data(current["item"], sp)
+        print("✅ Track data built:", track_data["name"], track_data["id"])
 
         existing = users_collection.find_one(
             {"user_id": user_id}, {"last_played_track": 1}
@@ -126,14 +127,15 @@ def update_playing(request: Request, access_token: str = Depends(get_token)):
             print("🟡 Track already stored, skipping update.")
             return {"status": "unchanged", "track": track_data}
 
-        users_collection.update_one(
+        result = users_collection.update_one(
             {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
         )
+        print("✅ Mongo update result:", result.raw_result)
 
         return {"status": "updated", "track": track_data}
 
     except Exception as e:
-        print(f"⚠️ Update playing error: {e}")
+        print(f"❌ Update playing error: {e}")
         raise HTTPException(
             status_code=500, detail="Failed to update last played track"
         )
