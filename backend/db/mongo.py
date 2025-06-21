@@ -1,12 +1,20 @@
 # db/mongo.py
 import os
 from pymongo import MongoClient
+from functools import lru_cache
 
-MONGO_URI = os.getenv("MONGODB_URI")
-DB_NAME = os.getenv("MONGODB_DB", "sinatra")
+@lru_cache()
+def get_mongo_client():
+    uri = os.getenv("MONGODB_URI")
+    if not uri:
+        raise RuntimeError("❌ MONGODB_URI not set.")
+    return MongoClient(uri)
 
-client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
+@lru_cache()
+def get_db():
+    db_name = os.getenv("MONGODB_DB", "sinatra")
+    return get_mongo_client()[db_name]
 
-users_collection = db.users
-playlists_collection = db.playlists
+# Collections (access lazily)
+users_collection = get_db().users
+playlists_collection = get_db().playlists
