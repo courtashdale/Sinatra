@@ -1,6 +1,7 @@
 // src/context/UserContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import { apiGet } from '../utils/api';
+import { getUserCookie } from '../utils/cookie';
 
 const UserContext = createContext();
 
@@ -9,6 +10,11 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   async function login() {
+    const cookie = getUserCookie();
+    if (!cookie) {
+      setLoading(false);
+      return;
+    }
     try {
       const me = await apiGet('/me');
       const dash = await apiGet('/dashboard');
