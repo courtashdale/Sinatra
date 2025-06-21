@@ -1,0 +1,22 @@
+# backend/music/meta_gradients.py
+gradients = {
+    "rock": "linear-gradient(to right, #c94b4b, #ff6f61)",
+    "pop": "linear-gradient(to right, #66A6FF, #89F7FE)",
+    "r&b": "linear-gradient(to right, #6b8e23, #cde6b5)",
+    "electronic": "linear-gradient(to right, #7f7fd5, #91eae4)",
+    "hip hop": "linear-gradient(to right, #FAAE7B, #F69A97)",
+    "metal": "linear-gradient(to right, #2c2c2c, #7f7f7f)",
+    "folk": "linear-gradient(to right, #4b6043, #a3c9a8)",
+    "jazz": "linear-gradient(to right, #2e1437, #a084ca)",
+    "reggae": "linear-gradient(to right, #007f5f, #a8d5ba)",
+    "blues": "linear-gradient(to right, #1a237e, #7986cb)",
+    "country": "linear-gradient(to right, #c79b3b, #f5eec8)",
+    "new age": "linear-gradient(to right, #a1c4fd, #c2e9fb)",
+    "classical": "linear-gradient(to right, #3c3b3f, #e0d9d2)",
+    "easy listening": "linear-gradient(to right, #bb377d, #fbd3e9)",
+    "latin": "linear-gradient(to right, #f857a6, #ffcc70)",
+    "religious": "linear-gradient(to right, #7f7fd5, #eaf6ff)",
+    "vocal": "linear-gradient(to right, #a18cd1, #fbc7d4)",
+    "indie": "linear-gradient(to right, #ffb347, #ffcccb)",
+    "other": "linear-gradient(to right, #5B247A, #1BCEDF)",
+}

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sinatra</title>
+    <meta name="description" content="One link to share your music taste. Show people what you're listening to, your favourite playlists, and useful stats about your music taste." />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://api.spotify.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.spotify.com" />
+    <link rel="preconnect" href="https://sinatra.vercel.app" crossorigin />
+    <link rel="dns-prefetch" href="https://sinatra.vercel.app" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/src/index.css" rel="preload" as="style" />
+    <link
+      href="/src/index.css"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript><link href="/src/index.css" rel="stylesheet" /></noscript>
+  </head>
+  <body>
+    <script>
+      if (
+        window.location.pathname === '/' &&
+        document.cookie.split('; ').some((c) => c.startsWith('sinatra_user_id='))
+      ) {
+        window.location.replace('/home');
+      }
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

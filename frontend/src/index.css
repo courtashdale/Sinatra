@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* fonts */
+@font-face {
+  font-family: 'Duckie-regular';
+  src: url('https://db.onlinewebfonts.com/t/2952c30a5d1d09ac2e1cb5bea2f9b2a4.eot');
+  src:
+    url('https://db.onlinewebfonts.com/t/2952c30a5d1d09ac2e1cb5bea2f9b2a4.eot?#iefix')
+      format('embedded-opentype'),
+    url('https://db.onlinewebfonts.com/t/2952c30a5d1d09ac2e1cb5bea2f9b2a4.woff2')
+      format('woff2'),
+    url('https://db.onlinewebfonts.com/t/2952c30a5d1d09ac2e1cb5bea2f9b2a4.woff')
+      format('woff'),
+    url('https://db.onlinewebfonts.com/t/2952c30a5d1d09ac2e1cb5bea2f9b2a4.ttf')
+      format('truetype'),
+    url('https://db.onlinewebfonts.com/t/2952c30a5d1d09ac2e1cb5bea2f9b2a4.svg#Duckie-regular')
+      format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+  --font: system-ui;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #ffffff;
+  }
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  transition:
+    background 0.4s ease,
+    color 0.4s ease;
+}
+
+@layer utilities {
+  .font-duckie {
+    font-family: 'Duckie-regular', 'Duckie', cursive !important;
+  }
+
+  .font-damion {
+    font-family: 'Damion', cursive;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .modal-container {
+    @apply p-6 rounded-xl shadow text-gray-900 dark:text-white;
+    background-color: var(--bg, white);
+  }
+
+  .font-yellowtail {
+    font-family: 'Yellowtail', cursive;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .animate-spin-once svg {
+    animation: spin 0.6s linear;
+  }
+
+  .animate-fadein {
+    animation: fadein 0.4s ease-in-out;
+  }
+
+  .animate-scalein {
+    animation: scalein 0.3s ease-out;
+  }
+
+  .animate-fadein-fast {
+    animation: fadeinText 0.4s ease-out;
+  }
+
+  .animate-fadein-slow {
+    animation: fadeinText 0.4s ease-out 0.15s;
+  }
+
+  .animate-bgfade {
+    animation: bgfade 0.4s ease-in-out;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scalein {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinText {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bgfade {
+  0% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

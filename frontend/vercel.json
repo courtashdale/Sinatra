@@ -1,0 +1,13 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/callback", "destination": "/" },
+    { "source": "/@:user_id", "destination": "/" },
+    { "source": "/u/:user_id", "destination": "/" },
+    { "source": "/home", "destination": "/" },
+    { "source": "/onboard", "destination": "/" },
+    { "source": "/playlists", "destination": "/" },
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}

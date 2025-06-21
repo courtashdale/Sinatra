@@ -1,0 +1,14 @@
+name: Keep Sinatra Backend Warm
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # every 10 minutes
+  workflow_dispatch:       # allows manual triggering too
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Curl backend
+        run: curl --silent --show-error --fail https://backend.sinatra.live/ 

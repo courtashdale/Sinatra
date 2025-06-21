@@ -1,0 +1,21 @@
+function PlaylistImporter({ user, onboardData, setOnboardData, setCanProceed }) {
+  const [playlists, setPlaylists] = useState([]);
+  const [selectedIds, setSelectedIds] = useState(() =>
+    Array.isArray(onboardData.selected_playlists)
+      ? onboardData.selected_playlists.map(p => p.playlist_id || p.id)
+      : []
+  );
+  const [sortDesc, setSortDesc] = useState(true);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    apiPost(`/admin/sync_playlists?user_id=${user.id}`,{})
+      .then(() => apiGet(`/user-playlists?user_id=${user.id}`))
+      .then(res => {
+        const sorted = res.playlists.sort((a, b) => b.tracks - a.tracks);
+        setPlaylists(sorted);
+      })
+      .catch(err => console.error("Playlist sync failed:", err));
+  }, [user.id]);
+
+  ### ^^^^ this can be used in the playlistimporter to fetch ALL of the user's playlists, not just 50. This is proof of concept, but is banked. 

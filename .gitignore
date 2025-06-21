@@ -1,0 +1,34 @@
+/backend/.cache
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+venv/
+
+# Frontend static build
+backend/static/assets/
+tree.md__pycache__/
+*.egg-info
+*.egg-link
+.venv/
+backend/static
+tree.md
+.cache
+.DS_Store
+settings.json
+csv2json.py
+
+__pycache__/
+*.pyc
+.env
+.vscode/
+.DS_Store
+static/dist/
+node_modules/
+dist/
+.env
+.DS_Store
+.vscode/settings.json

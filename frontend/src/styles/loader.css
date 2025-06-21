@@ -1,0 +1,48 @@
+/* src/styles/loader.css */
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 3px;
+  background:
+    radial-gradient(farthest-side, #bf77f6 95%, #0000) 50% 0/12px 12px no-repeat,
+    radial-gradient(
+        farthest-side,
+        #0000 calc(100% - 5px),
+        #bf77f6 calc(100% - 4px)
+      )
+      content-box;
+  animation: l6 2s infinite;
+}
+
+@keyframes l6 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* center vertically */
+  width: 100vw; /* center horizontally */
+}
+
+/* styles/loader.css */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.glint {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(90deg, #e0e0e0 0%, #f8f8f8 50%, #e0e0e0 100%);
+  background-size: 200% 100%;
+}
