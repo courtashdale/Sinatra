@@ -12,7 +12,7 @@ export async function apiGet(path, options = {}, retries = 3) {
     const res = await fetch(`${BASE_URL}${path}`, {
       method: 'GET',
       credentials: 'include',
-      ...options
+      ...options,
     });
 
     const text = await res.text();

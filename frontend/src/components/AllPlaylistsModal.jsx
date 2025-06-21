@@ -21,11 +21,9 @@ function AllPlaylistsModal({ isOpen, onClose, playlists = [], user }) {
   }, [isOpen]);
 
   const filteredPlaylists = playlists
-  .map(normalizePlaylist)
-  .filter((pl) =>
-    pl.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
+    .map(normalizePlaylist)
+    .filter((pl) => pl.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+
   if (!isVisible) return null;
 
   return (

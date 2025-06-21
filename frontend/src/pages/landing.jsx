@@ -19,11 +19,11 @@ function Landing() {
       return;
     }
 
-    if (!loading && !user && hasCookie && !clearing)
-    {
+    if (!loading && !user && hasCookie && !clearing) {
       setClearing(true);
-      apiLogout().catch((err) => console.error('Failed to clear cookie:',err))
-      .finally(() => setClearing(false));
+      apiLogout()
+        .catch((err) => console.error('Failed to clear cookie:', err))
+        .finally(() => setClearing(false));
     }
   }, [loading, user, hasCookie, clearing, navigate]);
 

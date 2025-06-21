@@ -93,13 +93,19 @@ function EditPlaylistsModal({ isOpen, onClose }) {
     try {
       const targetPlaylists =
         tab === 'add'
-          ? allSpotifyPlaylists.filter((p) => selectedIds.includes(p.playlist_id || p.id))
-          : importedPlaylists.filter((p) => selectedIds.includes(p.playlist_id || p.id));
+          ? allSpotifyPlaylists.filter((p) =>
+              selectedIds.includes(p.playlist_id || p.id)
+            )
+          : importedPlaylists.filter((p) =>
+              selectedIds.includes(p.playlist_id || p.id)
+            );
 
-      const payload = targetPlaylists.map((p) => ({ id: p.playlist_id || p.id }));
+      const payload = targetPlaylists.map((p) => ({
+        id: p.playlist_id || p.id,
+      }));
       const endpoint = tab === 'add' ? '/add-playlists' : '/delete-playlists';
 
-      console.log("📤 Submitting:", {
+      console.log('📤 Submitting:', {
         endpoint,
         playlists: payload,
       });
@@ -116,17 +122,23 @@ function EditPlaylistsModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const importedIds = new Set(importedPlaylists.map((p) => p.playlist_id || p.id));
+  const importedIds = new Set(
+    importedPlaylists.map((p) => p.playlist_id || p.id)
+  );
 
   const displayedPlaylists =
     tab === 'add'
-      ? allSpotifyPlaylists.filter((p) => !importedIds.has(p.playlist_id || p.id))
+      ? allSpotifyPlaylists.filter(
+          (p) => !importedIds.has(p.playlist_id || p.id)
+        )
       : importedPlaylists;
 
   const filteredPlaylists = displayedPlaylists
     .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
-      sortDesc ? (b.tracks || 0) - (a.tracks || 0) : (a.tracks || 0) - (b.tracks || 0)
+      sortDesc
+        ? (b.tracks || 0) - (a.tracks || 0)
+        : (a.tracks || 0) - (b.tracks || 0)
     );
 
   return (
@@ -216,7 +228,9 @@ function EditPlaylistsModal({ isOpen, onClose }) {
                   index={i}
                   onClick={() =>
                     setSelectedIds((prev) =>
-                      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+                      prev.includes(id)
+                        ? prev.filter((i) => i !== id)
+                        : [...prev, id]
                     )
                   }
                   isSelected={selectedIds.includes(id)}
@@ -228,14 +242,16 @@ function EditPlaylistsModal({ isOpen, onClose }) {
           )}
         </div>
 
-        {tab === 'add' && !search && allSpotifyPlaylists.length < totalAvailable && (
-          <button
-            onClick={loadMorePlaylists}
-            className="mt-4 w-full px-4 py-2 text-sm rounded bg-gray-100 dark:bg-gray-700"
-          >
-            Load More ({allSpotifyPlaylists.length}/{totalAvailable})
-          </button>
-        )}
+        {tab === 'add' &&
+          !search &&
+          allSpotifyPlaylists.length < totalAvailable && (
+            <button
+              onClick={loadMorePlaylists}
+              className="mt-4 w-full px-4 py-2 text-sm rounded bg-gray-100 dark:bg-gray-700"
+            >
+              Load More ({allSpotifyPlaylists.length}/{totalAvailable})
+            </button>
+          )}
 
         <div className="sticky bottom-0 left-0 bg-white dark:bg-gray-800 border-t mt-4 pt-3 pb-4 px-6 flex gap-2 z-10">
           <CloseButton onClick={onClose} className="flex-1" />

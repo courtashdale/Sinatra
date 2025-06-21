@@ -12,7 +12,7 @@ export async function getMetaGradients() {
     cachedGradients = data;
     return data;
   } catch (err) {
-    console.error("Failed to fetch genre gradients", err);
+    console.error('Failed to fetch genre gradients', err);
     cachedGradients = metaGenreGradients;
     return {};
   }
@@ -42,7 +42,7 @@ export function getMetaGenre(genre) {
     'indie',
   ];
 
-  return knownMetaGenres.find((meta) => lower.includes(meta)) || "other";
+  return knownMetaGenres.find((meta) => lower.includes(meta)) || 'other';
 }
 
 export function getMetaGenreFromList(genres = []) {

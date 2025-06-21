@@ -11,7 +11,9 @@ function TopSubGenre({ topGenre }) {
       Current taste:{' '}
       <span
         className="font-semibold bg-clip-text text-transparent"
-        style={{ backgroundImage: gradient || 'linear-gradient(to right, #666, #999)' }}
+        style={{
+          backgroundImage: gradient || 'linear-gradient(to right, #666, #999)',
+        }}
       >
         {sub_genre}
       </span>

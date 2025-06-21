@@ -6,7 +6,7 @@ import TopSubGenre from './ui/TopSubGenre';
 function UserHeader({ userState, genresData }) {
   if (!userState) return null;
 
-  console.log("✅ genresData.top_subgenre:", genresData?.top_subgenre);
+  console.log('✅ genresData.top_subgenre:', genresData?.top_subgenre);
 
   return (
     <div className="flex flex-col items-center text-center mb-3 space-y-0.5">

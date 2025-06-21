@@ -32,7 +32,7 @@ export default function PublicProfile() {
         : import.meta.env.VITE_PRO_CALLBACK;
 
     const loginUrl = `${import.meta.env.VITE_API_BASE_URL}/login?state=${state}&redirect_uri=${encodeURIComponent(
-      redirectUri,
+      redirectUri
     )}`;
     window.location.href = loginUrl;
   };
@@ -57,7 +57,7 @@ export default function PublicProfile() {
 
         setTimeout(() => setShowCTA(true), 1500);
       } catch (err) {
-        console.error("❌ Failed to load public profile:", err);
+        console.error('❌ Failed to load public profile:', err);
       }
     }
 

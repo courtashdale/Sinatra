@@ -83,15 +83,15 @@ function RecentlyPlayedCard({
           >
             {cleanTrackName(track.name)}
           </p>
-          <p 
+          <p
             className={`text-sm text-gray-200 ${animateTrackChange ? 'animate-fadein-slow' : ''}`}
           >
             {track.artist}
           </p>
 
-          {track.genres?.length > 0 && (
+          {track.genres?.length > 0 &&
             (() => {
-              const first= track.genres[0];
+              const first = track.genres[0];
               const isObject = first && typeof first === 'object';
               const label = isObject ? first.name : first;
               const gradient = isObject
@@ -100,14 +100,13 @@ function RecentlyPlayedCard({
               if (!gradients) return null;
               return (
                 <span
-                  className='inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-white shadow mt-1'
+                  className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-white shadow mt-1"
                   style={{ background: gradient }}
                 >
                   {label}
                 </span>
               );
-            })()
-          )}
+            })()}
         </div>
       </div>
 
