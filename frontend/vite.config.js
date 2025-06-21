@@ -63,6 +63,7 @@ export default defineConfig({
       '/health': 'http://localhost:8000',
       '/refresh_genres': 'http://localhost:8000',
       '/spotify-me': 'http://localhost:8000',
+      '/whoami': 'http://localhost:8000',
     },
   },
   build: {

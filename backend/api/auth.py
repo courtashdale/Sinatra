@@ -119,3 +119,36 @@ def logout_user():
         secure=True,  # Match what you used in login
     )
     return response
+
+@router.get("/whoami")
+def whoami(request: Request):
+    all_cookies = request.cookies
+    user_id = all_cookies.get("sinatra_user_id")
+
+    print("🔍 /whoami DEBUG:")
+    print("🧁  All cookies received:", dict(all_cookies))
+    print("🆔  sinatra_user_id cookie:", user_id)
+
+    if not user_id:
+        print("🚫 No sinatra_user_id cookie found")
+        return JSONResponse(
+            {"message": "No sinatra_user_id cookie found"},
+            status_code=401,
+        )
+
+    user = users_collection.find_one({"user_id": user_id})
+    if not user:
+        print(f"❌ No user found in DB for user_id: {user_id}")
+        return JSONResponse(
+            {"message": f"User ID from cookie: {user_id} not found in DB"},
+            status_code=404,
+        )
+
+    print(f"✅ User found: {user.get('display_name')} ({user_id})")
+
+    return {
+        "message": "User identified via cookie",
+        "user_id": user_id,
+        "display_name": user.get("display_name"),
+        "profile_image_url": user.get("profile_image_url"),
+    }
