@@ -1,3 +1,5 @@
+[![Frontend](https://img.shields.io/website?url=https%3A%2F%2Fsinatra-pi.vercel.app)](https://sinatra-pi.vercel.app)
+[![Backend](https://img.shields.io/website?url=https%3A%2F%2Fbackend.sinatra.live)](https://backend.sinatra.live)
 # 🎸 Sinatra
 
 Sinatra is a full-stack web application for sharing Spotify listening habits. It provides a FastAPI backend with MongoDB storage and a React frontend build with Vite. The app lets users sign in with Spotify, analyze playlists and genres, and display a public profile accessible from a unique URL.
