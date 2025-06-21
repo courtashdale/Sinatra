@@ -32,7 +32,7 @@ npm install --legacy-peer-deps
 
 3. Start both servers (from /frontend)
 ```bash
-npm run dev: all
+npm run dev:all
 ```
 This runs the Vite dev server and the FastAPI backend together.
 

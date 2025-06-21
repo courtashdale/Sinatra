@@ -2,7 +2,7 @@ name: Keep Sinatra Backend Warm
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # every 10 minutes
+    - cron: '*/12 * * * *' # every 12 minutes
   workflow_dispatch:       # allows manual triggering too
 
 jobs:
@@ -11,4 +11,4 @@ jobs:
 
     steps:
       - name: Curl backend
-        run: curl --silent --show-error --fail https://backend.sinatra.live/ 
+        run: curl -sSf https://backend.sinatra.live || echo "❌ Ping failed"
