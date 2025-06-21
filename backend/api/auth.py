@@ -24,12 +24,23 @@ def safe_b64decode(data: str):
 
 
 @router.get("/login")
-async def login(redirect_uri: str = Query(...)):
-    state_payload = json.dumps({"redirect_uri": redirect_uri})
+async def login():
+    # Redirect URI for frontend to land on after auth finishes
+    frontend_redirect_uri = PRO_BASE_URL + "/home" if not IS_DEV else DEV_BASE_URL + "/home"
+
+    # Encode that into state so /callback knows where to send user
+    state_payload = json.dumps({"redirect_uri": frontend_redirect_uri})
     encoded_state = base64.urlsafe_b64encode(state_payload.encode()).decode()
 
-    sp_oauth = get_spotify_oauth(redirect_uri)
+    # Use real, registered backend redirect URI for Spotify
+    sp_oauth = get_spotify_oauth(CALLBACK_URL)
     auth_url = sp_oauth.get_authorize_url(state=encoded_state)
+
+    print("🔐 Starting Spotify auth with:")
+    print("   CALLBACK_URL =", CALLBACK_URL)
+    print("   STATE (decoded) =", state_payload)
+    print("   AUTH_URL =", auth_url)
+
     return RedirectResponse(auth_url)
 
 
