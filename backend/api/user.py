@@ -1,29 +1,12 @@
 # api/user.py
 from fastapi import APIRouter, Request, HTTPException, Query, Body
-from db.mongo import users_collection
+from fastapi.responses import JSONResponse
+from db.mongo import users_collection, playlists_collection
 from services.token import get_token
 from datetime import datetime
 import spotipy
-from fastapi import APIRouter
-from db.mongo import client
-from datetime import datetime
-from pymongo.errors import ConnectionFailure
-import os, requests
-from fastapi import Request, HTTPException, Query
-from fastapi.responses import RedirectResponse
-from db.mongo import users_collection, playlists_collection
-from fastapi.responses import JSONResponse
 
 router = APIRouter(tags=["user"])
-
-
-# api/user.py
-from fastapi import APIRouter, Request, HTTPException
-from fastapi.responses import JSONResponse
-from db.mongo import users_collection
-import spotipy
-
-router = APIRouter()
 
 
 @router.get("/me")
@@ -52,6 +35,7 @@ def get_me(request: Request):
                 "profile_image_url": profile_image,
                 "theme": "default",
             }
+
             users_collection.update_one(
                 {"user_id": user_id}, {"$set": new_user}, upsert=True
             )
@@ -92,8 +76,8 @@ def register_user(data: dict = Body(...)):
     featured_ids = [p.get("id") for p in data.get("featured_playlists", [])]
 
     sp = spotipy.Spotify(auth=get_token(user_id))
-
     enriched = []
+
     for pl in selected_playlists:
         try:
             playlist = sp.playlist(pl["id"])
@@ -126,7 +110,7 @@ def register_user(data: dict = Body(...)):
 
     users_collection.update_one({"user_id": user_id}, {"$set": user_doc}, upsert=True)
 
-    # Optional: trigger last_played and genre analysis (import locally)
+    # Optional: trigger last_played and genre analysis
     try:
         from services.music.wizard import genre_highest
         from api.genres import get_genres
@@ -150,6 +134,7 @@ def register_user(data: dict = Body(...)):
                     "genres": artist_data.get("genres", []),
                 }
             }
+
             users_collection.update_one(
                 {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
             )
@@ -165,10 +150,7 @@ def register_user(data: dict = Body(...)):
 
 
 @router.delete("/delete-user")
-def delete_user(
-    request: Request,
-    user_id: str = Query(...),
-):
+def delete_user(request: Request, user_id: str = Query(...)):
     print(f"🗑️ Deleting user: {user_id}")
 
     users_collection.delete_one({"user_id": user_id})
