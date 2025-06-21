@@ -12,12 +12,6 @@ export function UserProvider({ children }) {
   const location = useLocation();
 
   async function login() {
-    const cookie = getUserCookie();
-    if (!cookie) {
-      setLoading(false);
-      return;
-    }
-
     try {
       const me = await apiGet('/me');
       const dash = await apiGet('/dashboard');
