@@ -10,7 +10,8 @@ SECRET = os.getenv("COOKIE_SECRET", "dev-secret")
 
 def _sign(value: str) -> str:
     sig = hmac.new(SECRET.encode(), value.encode(), hashlib.sha256).digest()
-    return base64.urlsafe_b64decode(sig).decode().rstrip("=")
+    # Base64-encode the binary signature
+    return base64.urlsafe_b64encode(sig).decode().rstrip("=")
 
 
 def encode(user_id: str) -> str:
@@ -33,7 +34,7 @@ def get_user_id_from_request(request: Request) -> str:
     cookie = request.cookies.get("sinatra_user_id")
     if not cookie:
         raise HTTPException(
-            status_code=401, detail="🤷‍♂️ Misisng sinatra_user_id_cookie"
+            status_code=401, detail="🤷‍♂️ Missing sinatra_user_id cookie"
         )
     try:
         return decode(cookie)
