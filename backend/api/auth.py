@@ -3,8 +3,10 @@ from fastapi import APIRouter, Request, Query, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 import base64, json, os
 import spotipy
+from spotipy.exceptions import SpotifyException
 
 from services.spotify_auth import get_spotify_oauth
+from services.cookie import encode, decode
 from db.mongo import users_collection
 from services.token import refresh_user_token
 
@@ -26,7 +28,9 @@ def safe_b64decode(data: str):
 @router.get("/login")
 async def login():
     # Redirect URI for frontend to land on after auth finishes
-    frontend_redirect_uri = PRO_BASE_URL + "/home" if not IS_DEV else DEV_BASE_URL + "/home"
+    frontend_redirect_uri = (
+        PRO_BASE_URL + "/home" if not IS_DEV else DEV_BASE_URL + "/home"
+    )
 
     # Encode that into state so /callback knows where to send user
     state_payload = json.dumps({"redirect_uri": frontend_redirect_uri})
@@ -66,6 +70,14 @@ async def callback(request: Request):
         sp = spotipy.Spotify(auth=token_info["access_token"])
         profile = sp.current_user()
         user_id = profile.get("id")
+    except SpotifyException as e:
+        print(f"🙅‍♂️ Token exchange or user fetch failed: {e}")
+        if e.http_status == 403:
+            raise HTTPException(
+                status_code=403,
+                detail="Spotify forbids access, the user may not be registered in dashboard",
+            )
+        raise HTTPException(status_code=500, detail=f"☎️ Internal callback error: {e}")
     except Exception as e:
         print(f"❌ Token exchange or user fetch failed: {e}")
         raise HTTPException(status_code=500, detail=f"Internal callback error: {e}")
@@ -93,7 +105,7 @@ async def callback(request: Request):
 
     response.set_cookie(
         key="sinatra_user_id",
-        value=user_id,
+        value=encode(user_id),
         httponly=True,
         secure=not IS_DEV,
         samesite="None" if not IS_DEV else "Lax",
@@ -131,10 +143,17 @@ def logout_user():
     )
     return response
 
+
 @router.get("/whoami")
 def whoami(request: Request):
     all_cookies = request.cookies
-    user_id = all_cookies.get("sinatra_user_id")
+    cookie_val = all_cookies.get("sinatra_user_id")
+    user_id = None
+    if cookie_val:
+        try:
+            user_id = decode(cookie_val)
+        except Exception:
+            user_id = None
 
     print("🔍 /whoami DEBUG:")
     print("🧁  All cookies received:", dict(all_cookies))

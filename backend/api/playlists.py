@@ -12,6 +12,7 @@ import spotipy
 from fastapi import Request, Depends
 from services.token import get_token
 from models.playlists import FeaturedPlaylistsUpdateRequest
+from services.cookie import get_user_id_from_request
 
 from db.mongo import users_collection, playlists_collection
 from services.token import get_token
@@ -57,9 +58,7 @@ async def add_playlists(
     request: Request,
     access_token: str = Depends(get_token),
 ):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
 
     try:
         body = await request.json()
@@ -107,9 +106,7 @@ async def delete_playlists(
     request: Request,
     access_token: str = Depends(get_token),
 ):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
 
     try:
         body = await request.json()

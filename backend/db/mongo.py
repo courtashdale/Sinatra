@@ -3,6 +3,7 @@ import os
 from pymongo import MongoClient
 from functools import lru_cache
 
+
 @lru_cache()
 def get_mongo_client():
     uri = os.getenv("MONGODB_URI")
@@ -10,10 +11,12 @@ def get_mongo_client():
         raise RuntimeError("❌ MONGODB_URI not set.")
     return MongoClient(uri)
 
+
 @lru_cache()
 def get_db():
     db_name = os.getenv("MONGODB_DB", "sinatra")
     return get_mongo_client()[db_name]
+
 
 # Collections (access lazily)
 users_collection = get_db().users
