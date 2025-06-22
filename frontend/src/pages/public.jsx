@@ -17,7 +17,14 @@ const AllPlaylistsModal = lazy(() => import('../components/AllPlaylistsModal'));
 
 export default function PublicProfile() {
   const { user_id } = useParams();
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(() => {
+    try {
+      const cached = localStorage.getItem(`publicProfile:${user_id}`);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
   const [showCTA, setShowCTA] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isAllModalOpen, setAllModalOpen] = useState(false);
@@ -38,11 +45,20 @@ export default function PublicProfile() {
   };
 
   useEffect(() => {
+    const cached = localStorage.getItem(`publicProfile:${user_id}`);
+    if (cached) {
+      try {
+        setProfile(JSON.parse(cached));
+      } catch {
+        /* ignore parse errors */
+      }
+    }
+
     async function load() {
       try {
         const userData = await apiGet(`/public-profile/${user_id}`);
 
-        setProfile({
+        const parsed = {
           ...userData,
           last_played_track: userData.last_played || null,
           profile_image_url: userData.profile_picture,
@@ -53,7 +69,13 @@ export default function PublicProfile() {
             ? userData.playlists.all.map(normalizePlaylist)
             : [],
           genres_data: userData.genres || {},
-        });
+        };
+
+        setProfile(parsed);
+        localStorage.setItem(
+          `publicProfile:${user_id}`,
+          JSON.stringify(parsed)
+        );
 
         setTimeout(() => setShowCTA(true), 1500);
       } catch (err) {

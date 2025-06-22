@@ -21,3 +21,6 @@ def get_db():
 # Collections (access lazily)
 users_collection = get_db().users
 playlists_collection = get_db().playlists
+
+# Ensure indexes for last lookups
+users_collection.create_index("user_id", unique=True)
