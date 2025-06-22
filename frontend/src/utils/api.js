@@ -1,10 +1,5 @@
 // src/utils/api.js
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-console.log('MODE:', import.meta.env.MODE);
-console.log('BASE_URL:', BASE_URL);
-
-console.log('✅ ENV VALUE =', import.meta.env.VITE_API_BASE_URL);
-
 if (!BASE_URL) {
   console.error('❌ Missing VITE_API_BASE_URL');
 }
@@ -18,11 +13,10 @@ export async function apiGet(path, options = {}, retries = 3) {
     });
 
     const text = await res.text();
-    console.log(`[apiGet] Raw response for ${path}:`, text);
 
     if (!res.ok) throw new Error(`GET ${path} failed (${res.status})`);
 
-    return JSON.parse(text);
+    return text ? JSON.parse(text) : null;
   } catch (err) {
     console.error(`Playback error: ${err}`);
     throw err;

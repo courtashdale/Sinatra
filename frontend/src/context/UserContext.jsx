@@ -13,15 +13,9 @@ export function UserProvider({ children }) {
 
   async function login() {
     try {
-      const me = await apiGet('/me');
-      const dash = await apiGet('/dashboard');
-      setUser({
-        ...me,
-        playlists: dash.playlists,
-        genres: dash.genres,
-        last_played: dash.last_played,
-      });
-      console.log('✅ Authenticated as:', me.user_id);
+      const session = await apiGet('/session');
+      setUser(session);
+      console.log('✅ Authenticated as:', session.user_id);
     } catch (err) {
       console.error('Login failed:', err);
     } finally {

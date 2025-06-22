@@ -10,7 +10,18 @@ router = APIRouter(tags=["public"])
 
 def _build_profile_response(user_id: str):
     """Return the public profile document for the given user."""
-    doc = users_collection.find_one({"user_id": user_id})
+    projection = {
+        "user_id": 1,
+        "display_name": 1,
+        "profile_image_url": 1,
+        "profile_picture": 1,
+        "playlists": 1,
+        "genre_analysis": 1,
+        "genres_analysis": 1,
+        "genres": 1,
+        "last_played_track": 1,
+    }
+    doc = users_collection.find_one({"user_id": user_id}, projection)
     if not doc:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -25,7 +36,11 @@ def _build_profile_response(user_id: str):
         playlist_lookup.get(pid) for pid in featured_ids if pid in playlist_lookup
     ]
 
-    genres_data = doc.get("genres_analysis") or doc.get("genres")
+    genres_data = (
+        doc.get("genre_analysis")
+        or doc.get("genres_analysis")
+        or doc.get("genres")
+    )
     last_played = doc.get("last_played_track", {})
 
     return {
@@ -36,7 +51,7 @@ def _build_profile_response(user_id: str):
             "all": all_playlists,
             "featured": featured_playlists,
         },
-        "genres": doc.get("genre_analysis"),
+        "genres": genres_data,
         "last_played": last_played,
     }
 

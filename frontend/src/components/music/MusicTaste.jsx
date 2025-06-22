@@ -6,12 +6,39 @@ import SubGenreBarList from './SubGenreBarList';
 import { useSwipeable } from 'react-swipeable';
 
 function MusicTaste({ genresData: initialGenresData, userId }) {
-  const [genresData, setGenresData] = useState(initialGenresData || null);
-  const [loading, setLoading] = useState(!initialGenresData);
+  const cached =
+    !initialGenresData && userId
+      ? localStorage.getItem(`genreData:${userId}`)
+      : null;
+  
+      const [genresData, setGenresData] = useState(() => {
+        if (initialGenresData) return initialGenresData;
+        if (cached) {
+          try {
+            return JSON.parse(cached);
+          } catch {
+            return null;
+          }
+        }
+        return null;
+      });
+  const [ loading, setLoading ] = useState(!initialGenresData && !cached);
   const [step, setStep] = useState(0);
   const hasShownGenresOnce = useRef(false);
 
   useEffect(() => {
+    if (userId) {
+      const cachedData = localStorage.getItem(`genreData:${userId}`);
+      if (!initialGenresData && cachedData) {
+        try {
+          setGenresData(JSON.parse(cachedData));
+          setLoading(false);
+          return;
+        } catch {
+          /* ignore parse errors */
+        }
+      }
+    }
     if (!genresData) {
       const endpoint = userId ? `/public-genres/${userId}` : `/genres`;
 
@@ -28,7 +55,7 @@ function MusicTaste({ genresData: initialGenresData, userId }) {
           setLoading(false);
         });
     }
-  }, [userId, genresData]);
+  }, [userId]);
 
   const metaGenres = useMemo(() => {
     if (!genresData?.meta_genres) return [];
