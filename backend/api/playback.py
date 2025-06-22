@@ -4,14 +4,14 @@ import spotipy
 from db.mongo import users_collection
 from services.token import get_token
 from services.spotify import build_track_data
+from services.cookie import get_user_id_from_request
 
 router = APIRouter(tags=["playback"])
 
+
 @router.get("/playback")
 def get_playback_state(request: Request, access_token: str = Depends(get_token)):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
 
     sp = spotipy.Spotify(auth=access_token)
 
@@ -57,7 +57,13 @@ def get_recently_played(
         track = recent["items"][0]["track"]
         track_data = build_track_data(track, sp)
 
-        user_id = request.cookies.get("sinatra_user_id")
+        user_id_cookie = request.cookies.get("sinatra_user_id")
+        user_id = None
+        if user_id_cookie:
+            try:
+                user_id = get_user_id_from_request(request)
+            except HTTPException:
+                user_id = None
         if user_id:
             existing = users_collection.find_one(
                 {"user_id": user_id}, {"last_played_track": 1}
@@ -102,9 +108,7 @@ def now_playing(request: Request, access_token: str = Depends(get_token)):
 
 @router.post("/update-playing")
 def update_playing(request: Request, access_token: str = Depends(get_token)):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
 
     sp = spotipy.Spotify(auth=access_token)
 
@@ -143,9 +147,7 @@ def update_playing(request: Request, access_token: str = Depends(get_token)):
 
 @router.get("/check-recent")
 def check_recent_track(request: Request):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
 
     user = users_collection.find_one({"user_id": user_id})
     return {"track": user.get("last_played_track")}

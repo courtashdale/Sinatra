@@ -10,6 +10,7 @@ from services.music.wizard import get_gradient_for_genre
 from services.music.meta_gradients import gradients
 from fastapi import Request
 from services.token import get_token_by_user_id
+from services.cookie import get_user_id_from_request
 
 
 import os, json, traceback
@@ -26,9 +27,7 @@ GENRE_MAP_PATH = (
 
 @router.get("/genres")
 def get_genres(request: Request, refresh: bool = False):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
     try:
         access_token = get_token(request)
         return analyze_user_genres(user_id, access_token)

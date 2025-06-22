@@ -3,6 +3,7 @@ from fastapi import APIRouter, Request, HTTPException, Query, Body
 from fastapi.responses import JSONResponse
 from db.mongo import users_collection, playlists_collection
 from services.token import get_token
+from services.cookie import get_user_id_from_request
 from datetime import datetime
 import spotipy
 
@@ -11,9 +12,7 @@ router = APIRouter(tags=["user"])
 
 @router.get("/me")
 def get_me(request: Request):
-    user_id = request.cookies.get("sinatra_user_id")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Missing sinatra_user_id cookie")
+    user_id = get_user_id_from_request(request)
 
     user = users_collection.find_one({"user_id": user_id})
 

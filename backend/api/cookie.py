@@ -2,6 +2,7 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from models.shared import CookiePayload
+from services.cookie import encode
 
 router = APIRouter(tags=["cookie"])
 
@@ -14,7 +15,7 @@ def set_cookie(data: CookiePayload):
     response = JSONResponse({"message": "cookie set"})
     response.set_cookie(
         key="sinatra_user_id",
-        value=data.user_id,
+        value=encode(data.user_id),
         httponly=True,
         secure=True,
         samesite="None",

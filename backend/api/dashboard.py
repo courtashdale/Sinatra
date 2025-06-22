@@ -3,17 +3,15 @@ from fastapi import APIRouter, Request, HTTPException
 from db.mongo import users_collection
 from api.genres import get_genres
 from services.music.track_utils import apply_meta_gradients
+from services.cookie import get_user_id_from_request
 
 router = APIRouter(tags=["dashboard"])
 
 
 @router.get("/dashboard")
 def get_dashboard(request: Request):
-    user_id = request.cookies.get("sinatra_user_id")
+    user_id = get_user_id_from_request(request)
     print(f"🍪 /dashboard cookie received: sinatra_user_id = {user_id}")
-
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not logged in")
 
     doc = users_collection.find_one({"user_id": user_id})
     if not doc:
