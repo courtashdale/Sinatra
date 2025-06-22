@@ -1,6 +1,7 @@
 # main.py
 
 from core.env import load_env
+
 load_env()  # ✅ MUST come before importing anything that depends on env vars
 
 from fastapi import FastAPI

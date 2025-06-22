@@ -3,7 +3,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 console.log('MODE:', import.meta.env.MODE);
 console.log('BASE_URL:', BASE_URL);
 
-console.log("✅ ENV VALUE =", import.meta.env.VITE_API_BASE_URL);
+console.log('✅ ENV VALUE =', import.meta.env.VITE_API_BASE_URL);
 
 if (!BASE_URL) {
   console.error('❌ Missing VITE_API_BASE_URL');
