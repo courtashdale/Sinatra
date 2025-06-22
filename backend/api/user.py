@@ -6,6 +6,8 @@ from services.token import get_token
 from datetime import datetime
 import spotipy
 from services.cookie import get_user_id_from_request
+from api.genres import get_genres
+from services.music.track_utils import apply_meta_gradients
 
 router = APIRouter(tags=["user"])
 
@@ -158,3 +160,65 @@ def delete_user(request: Request, user_id: str = Query(...)):
     response = JSONResponse(content={"status": "deleted"})
     response.delete_cookie("sinatra_user_id", path="/")
     return response
+
+@router.get("/session")
+def get_session(request: Request):
+    """Return combined user profile and dashboard data."""
+    user_id = get_user_id_from_request(request)
+    user = users_collection.find_one({"user_id": user_id})
+
+    if not user or "display_name" not in user:
+        try:
+            access_token = get_token(request)
+            sp = spotipy.Spotify(auth=access_token)
+            sp_user = sp.current_user()
+
+            display_name = sp_user["display_name"]
+            profile_image = (
+                sp_user["images"][0]["url"] if sp_user.get("images") else None
+            )
+
+            new_user = {
+                "user_id": user_id,
+                "display_name": display_name,
+                "profile_image_url": profile_image,
+                "theme": "default",
+            }
+
+            users_collection.update.one(
+                {"user_id": user_id},
+                {"$set": new_user},
+                upsert=True
+            )
+            user = new_user
+        except Exception as e:
+            print(f"⚠️ Failed to auto register user {user_id}: {e}")
+            raise HTTPException(
+                status_code=404, detail="User not found and cannot be registered."
+            )
+    
+    playlists_data = user.get("playlists", {})
+    all_playlists = playlists_data.get("all", [])
+    featured_ids = playlists_data.get("featured", [])
+    playlist_lookup = {
+        pl.get('id') or pl.get('playlist_id'): pl for pl in all_playlists
+    }
+    featured_playlists = [
+        playlist_lookup.get(pid) for pid in featured_ids if pid in playlist_lookup
+    ]
+
+    genres_data = get_genres(request)
+    last_played = apply_meta_gradients(user.get("last_played_track", {}))
+
+    return {
+        "user_id": user["user_id"],
+        "display_name": user.get("display_name"),
+        "profile_image_url": user.get("profile_image_url"),
+        "theme": user.get("theme", "default"),
+        "playlists": {
+            "all": all_playlists,
+            "featured": featured_playlists,
+        },
+        "genres": genres_data,
+        "last_played": last_played,
+    }

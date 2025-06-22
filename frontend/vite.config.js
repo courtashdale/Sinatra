@@ -56,6 +56,7 @@ export default defineConfig({
       '/top-tracks': 'http://localhost:8000',
       '/top-subgenre': 'http://localhost:8000',
       '/analyze-genres': 'http://localhost:8000',
+      '/session': 'http://localhost:8000',
       '/genre-map': 'http://localhost:8000',
       '/users': 'http://localhost:8000',
       '/user-genres': 'http://localhost:8000',
