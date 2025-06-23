@@ -64,44 +64,49 @@ function Home() {
   }, [user?.last_played]);
 
   useEffect(() => {
+    if (!user) return;
+    refreshRecentlyPlayed();
     const interval = setInterval(() => {
       if (document.visibilityState === 'visible') {
-        loadNowPlaying();
+        refreshRecentlyPlayed();
       }
-    }, 20000); // 20 seconds
+    }, 30000); // 30 seconds
 
     return () => clearInterval(interval);
   }, [user]);
 
-  async function loadNowPlaying() {
+  async function refreshRecentlyPlayed() {
     setIsRefreshing(true);
     try {
-      // First try live playback
-      const playbackRes = await apiPost(`/update-playing`);
-      let latestTrack = playbackRes.track;
+      const nowRes = await apiGet('/now-playing');
+      let candidate = nowRes.track;
 
-      if (!latestTrack) {
-        // Nothing playing? Fallback to recently played
-        const recentRes = await apiGet(`/recently-played`);
-        latestTrack = recentRes.track;
+      if (
+        !candidate ||
+        (lastUpdated && new Date(candidate.timestamp) <= lastUpdated)
+      ) {
+        const recentRes = await apiGet('/recently-played');
+        candidate = recentRes.track;
       }
 
-      if (!latestTrack) return;
-
-      const isSame = JSON.stringify(latestTrack) === JSON.stringify(track);
-      if (!isSame) {
-        setAnimateTrackChange(true);
-        setTrack(latestTrack);
-        setLastUpdated(new Date());
-        localStorage.setItem('last_played_track', JSON.stringify(latestTrack));
-        localStorage.setItem(
-          'last_played_updated_at',
-          new Date().toISOString()
-        );
-        setTimeout(() => setAnimateTrackChange(false), 500);
+      if (
+        candidate &&
+        (!lastUpdated || new Date(candidate.timestamp) > lastUpdated)
+      ) {
+        await apiPost('/update-playing', { track: candidate });
+        const checkRes = await apiGet('/check-recent');
+        const newTrack = checkRes.track;
+        if (newTrack) {
+          setAnimateTrackChange(true);
+          setTrack(newTrack);
+          setLastUpdated(new Date(newTrack.timestamp));
+          localStorage.setItem('last_played_track', JSON.stringify(newTrack));
+          localStorage.setItem('last_played_updated_at', newTrack.timestamp);
+          setTimeout(() => setAnimateTrackChange(false), 500);
+        }
       }
     } catch (err) {
-      console.error('Error during loadNowPlaying():', err);
+      console.error('Error during refreshRecentlyPlayed():', err);
     } finally {
       setTimeout(() => setIsRefreshing(false), 600);
     }
@@ -197,7 +202,7 @@ function Home() {
           lastUpdated={lastUpdated}
           isRefreshing={isRefreshing}
           animateTrackChange={animateTrackChange}
-          onRefresh={loadNowPlaying}
+          onRefresh={refreshRecentlyPlayed}
         />
       </motion.div>
 
