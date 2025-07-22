@@ -185,7 +185,7 @@ def get_session(request: Request):
                 "theme": "default",
             }
 
-            users_collection.update.one(
+            users_collection.update_one(
                 {"user_id": user_id},
                 {"$set": new_user},
                 upsert=True

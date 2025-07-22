@@ -45,6 +45,10 @@ function Home() {
   );
 
   useEffect(() => {
+    loadNowPlaying();
+  }, []);
+
+  useEffect(() => {
     if (loading) return;
 
     if (!user) {

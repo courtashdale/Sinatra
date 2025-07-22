@@ -1,4 +1,6 @@
 # main.py
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 from core.env import load_env
 
