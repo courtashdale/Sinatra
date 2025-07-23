@@ -2,7 +2,7 @@
 [![Backend Status](https://img.shields.io/badge/Render-Online-brightgreen?logo=render)](https://backend.sinatra.live)
 # 🎸 Sinatra
 
-Sinatra is a full-stack web application for sharing Spotify listening habits. It provides a FastAPI backend with MongoDB storage and a React frontend build with Vite. The app lets users sign in with Spotify, analyze playlists and genres, and display a public profile accessible from a unique URL.
+Sinatra is a full-stack web application for sharing Spotify listening habits. The app lets users sign in with Spotify, analyze playlists and genres, and display a public profile accessible from a unique URL. It provides a FastAPI backend with MongoDB storage and a React frontend build with Vite. 
 
 
 This repository contains both the FastAPI backend and the React frontend of Sinatra that previously existed in separate repositories.
