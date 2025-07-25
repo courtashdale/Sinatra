@@ -45,6 +45,10 @@ function Home() {
   );
 
   useEffect(() => {
+    refreshRecentlyPlayed();
+  }, [])
+
+  useEffect(() => {
     if (loading) return;
 
     if (!user) {
@@ -89,10 +93,7 @@ function Home() {
         candidate = recentRes.track;
       }
 
-      if (
-        candidate &&
-        (!lastUpdated || new Date(candidate.timestamp) > lastUpdated)
-      ) {
+      else {
         await apiPost('/update-playing', { track: candidate });
         const checkRes = await apiGet('/check-recent');
         const newTrack = checkRes.track;
