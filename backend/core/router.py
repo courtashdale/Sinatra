@@ -13,8 +13,7 @@ from api import (
     vercel,
     admin,
     spotify,
-    public,
-    ai,
+    public
 )
 
 
@@ -31,4 +30,3 @@ def include_routers(app: FastAPI):
     app.include_router(vercel.router)
     app.include_router(spotify.router)
     app.include_router(public.router)
-    app.include_router(ai.router)

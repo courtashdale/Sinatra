@@ -1,5 +1,5 @@
 # api/playback.py
-from fastapi import APIRouter, Query, Depends, HTTPException, Request
+from fastapi import APIRouter, Query, Depends, HTTPException, Request, Body
 import spotipy
 from db.mongo import users_collection
 from services.token import get_token
@@ -56,28 +56,6 @@ def get_recently_played(
 
         track = recent["items"][0]["track"]
         track_data = build_track_data(track, sp)
-
-        user_id_cookie = request.cookies.get("sinatra_user_id")
-        user_id = None
-        if user_id_cookie:
-            try:
-                user_id = get_user_id_from_request(request)
-            except HTTPException:
-                user_id = None
-        if user_id:
-            existing = users_collection.find_one(
-                {"user_id": user_id}, {"last_played_track": 1}
-            )
-            if (
-                existing
-                and existing.get("last_played_track", {}).get("id") == track_data["id"]
-            ):
-                print("🟡 Track already stored, skipping update.")
-                return {"status": "unchanged", "track": track_data}
-            users_collection.update_one(
-                {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
-            )
-
         return {"track": track_data}
 
     except Exception as e:
@@ -107,34 +85,26 @@ def now_playing(request: Request, access_token: str = Depends(get_token)):
 
 
 @router.post("/update-playing")
-def update_playing(request: Request, access_token: str = Depends(get_token)):
+def update_playing(request: Request, data: dict = Body(...)):
     user_id = get_user_id_from_request(request)
 
-    sp = spotipy.Spotify(auth=access_token)
-
     try:
-        current = sp.current_playback()
-        if not current or not current.get("item"):
-            raise HTTPException(status_code=404, detail="Nothing is currently playing")
-
-        print("🎵 Current playback found")
-        track_data = build_track_data(current["item"], sp)
-        print("✅ Track data built:", track_data["name"], track_data["id"])
+        track_data = data.get("track")
+        if not track_data:
+            raise HTTPException(status_code=400, detail="👀 Missing track data")
 
         existing = users_collection.find_one(
             {"user_id": user_id}, {"last_played_track": 1}
         )
         if (
             existing
-            and existing.get("last_played_track", {}).get("id") == track_data["id"]
+            and existing.get("last_played_track", {}).get("id") == track_data.get("id")
         ):
-            print("🟡 Track already stored, skipping update.")
-            return {"status": "unchanged", "track": track_data}
+            return {"status": "unchanged", "track": existing.get("last_played_track")}
 
-        result = users_collection.update_one(
+        users_collection.update_one(
             {"user_id": user_id}, {"$set": {"last_played_track": track_data}}
         )
-        print("✅ Mongo update result:", result.raw_result)
 
         return {"status": "updated", "track": track_data}
 

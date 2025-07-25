@@ -4,40 +4,27 @@
 
 Sinatra is a full-stack web application for sharing Spotify listening habits. The app lets users sign in with Spotify, analyze playlists and genres, and display a public profile accessible from a unique URL. It provides a FastAPI backend with MongoDB storage and a React frontend build with Vite. 
 
+## 🗺️ Project Structure
 
-This repository contains both the FastAPI backend and the React frontend of Sinatra that previously existed in separate repositories.
+The project is a monorepo containing two main parts:
 
-## 🗺️ Architecture
-- `backend/` - FastAPI server and services
-  - `api/` - route modules
-  - `services/` - Spotify, token, and other helpers
-  - `db/` - MongoDB connection utilities
-- `frontend/` - React application
-  - `src/` - Pages and components
-  - `public/` - Static assets
+- **/frontend**: A React-based single-page application that serves as the user interface.
+- **/backend**: A Python-based API that handles logic, storage, and communication with the Spotify API.
 
-## 👷 Development
+## 🧰 Core Technologies
 
-1. Install Python dependencies
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+### Frontend
+- **React**: A JavaScript library for building user interfaces.
+- **Vite**: A modern, fast build tool for web development.
+- **Tailwind CSS**: A CSS framework for rapid UI development.
+- **React Router**: For handling client-side routing.
 
-2. Install frontend dependencies
-```bash
-cd ../frontend
-npm install --legacy-peer-deps
-```
+### Backend
+- **Python**: The primary language for the backend.
+- **FastAPI**: A high-performance web framework for building APIs.
+- **MongoDB**: A NoSQL database used for data storage.
+- **Spotipy**: A Python library for interacting with the Spotify Web API.
 
-3. Start both servers (from /frontend)
-```bash
-npm run dev:all
-```
-This runs the Vite dev server and the FastAPI backend together.
+## 🏎️ Getting Started
 
-## 🧼 Fortmatting
-
-Run `npm run format` inside `frontend/` to format both projects. It formats the React code with Prettier and the backend with Black.
+To run this project, you will need to have Node.js, Python, and MongoDB installed on your system. Please refer to the README files within the `frontend` and `backend` directories for specific setup and execution instructions.
