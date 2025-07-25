@@ -1,4 +1,6 @@
 # main.py
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 # Make sure that emojis can be encoded properly
 import sys
